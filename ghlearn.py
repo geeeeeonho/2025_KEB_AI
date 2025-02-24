@@ -30,3 +30,25 @@ class LinearRegression:
         :return: predict value for input (2d array format)
         """
         return self.slope * np.array(X) + self.intercept
+
+
+class KNeighborsRegressor:
+    def __init__(self, n_neighbors=None):
+        self.n_neighbors = n_neighbors
+        self.X = None
+        self.Y = None
+
+
+    def fit(self, X, Y):    #함수 제작
+        self.X = X.flatten()    #그래프 2차원화
+        self.Y = Y.flatten()    #그래프 2차원화
+
+
+    def predict(self, X_new): #예측 하기
+        predictions = []
+        for x in X_new:
+            distances = np.abs(self.X - x) #각 거리 계산
+            nearest_indices = np.argsort(distances)[:self.n_neighbors] #가장 가까운 n개 선택 #위의 생성에서 지정됨
+            nearest_values = self.Y[nearest_indices] #각각의 X에 해당하는 Y 값 가져오기
+            predictions.append(np.mean(nearest_values)) #평균 계산
+        return np.array(predictions)
