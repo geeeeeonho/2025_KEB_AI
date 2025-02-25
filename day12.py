@@ -11,4 +11,15 @@ df = pd.DataFrame(
         'C':[1 , 2 , 3 , 4],
     }
 )
+"""
+     A     B  C
+0  1.0   NaN  1
+1  2.0  12.0  2
+2  NaN   3.0  3
+3  4.0   4.0  4
+"""
+
+#1.imputer 사용 - 평균으로 채우기
+i = SimpleImputer(strategy='mean')  #평균으로 채우기
+df[['A','B']] = i.fit_transform(df[['A','B']])
 print(df)
