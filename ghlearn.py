@@ -33,22 +33,40 @@ class LinearRegression:
 
 
 class KNeighborsRegressor:
-    def __init__(self, n_neighbors=None):
+    def __init__(self, n_neighbors=5):  # default neighbor
         self.n_neighbors = n_neighbors
-        self.X = None
-        self.Y = None
 
 
-    def fit(self, X, Y):    #함수 제작
-        self.X = X.flatten()    #그래프 2차원화
-        self.Y = Y.flatten()    #그래프 2차원화
+    def fit(self, X_train, y_train):
+        """
+        learning function
+        :param X: independent variable (2d array format)
+        :param y: dependent variable (2d array format)
+        :return: void
+        """
+        self.X_train = X_train
+        self.y_train = y_train
 
 
-    def predict(self, X_new): #예측 하기
+    def predict(self, X_test):
+        """
+        predict value for input
+        :param X: new indepent variable
+        :return: predict value for input (2d array format)
+        """
         predictions = []
-        for x in X_new:
-            distances = np.abs(self.X - x) #각 거리 계산
-            nearest_indices = np.argsort(distances)[:self.n_neighbors] #가장 가까운 n개 선택 #위의 생성에서 지정됨
-            nearest_values = self.Y[nearest_indices] #각각의 X에 해당하는 Y 값 가져오기
-            predictions.append(np.mean(nearest_values)) #평균 계산
-        return np.array(predictions)
+        for x_test in X_test:  # loop just one time in this example
+            # d(P, Q) = sqrt((x2 - x1)^2 + (y2 - y1)^2)
+            distances = np.sqrt(np.sum((x_test - self.X_train)**2, axis=1)) #모든 x들의 거리 계산
+            #거리의 순서에 대한 값들을 얻을 수 있다.
+            print('주어진 기준으로부터 각각의 거리\n',distances)
+            indices = np.argsort(distances)[:self.n_neighbors]
+            # np.argsort(distances) 제일 작은 것을 배열(distances기준)
+            # 인덱스 배열에서 self.n_neighbors개만 선택
+            print('선택한 x들은 :',indices)
+            prediction = np.mean(self.y_train[indices])
+            # 각 선택된 x 값에 대응되는 y값의 평균
+            # prediction = (self.y_train[indices[0]]+self.y_train[indices[1]]+self.y_train[indices[2]]) / self.n_neighbors
+            predictions.append(prediction)
+
+            return np.array(prediction).reshape(-1, 1)
